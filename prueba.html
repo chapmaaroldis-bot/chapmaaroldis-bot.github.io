@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enciclopedia Estudiantil | Respuestas Optimizadas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F52BA',
+                        secondary: '#20B2AA',
+                        dark: '#1E293B',
+                        light: '#F8FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .transition-custom { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        }
+    </style>
+</head>
+<body class="bg-light font-sans text-dark min-h-screen flex flex-col">
+
+    <!-- Encabezado -->
+    <header class="bg-gradient-to-r from-primary to-[#194596] text-white py-4 px-4 md:px-8 shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <i class="fa fa-book text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold">ENCICLOPEDIA ESTUDIANTIL</h1>
+                    <p class="text-white/80 text-sm">Respuestas directas · Sin relleno</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección de Búsqueda -->
+    <section class="py-12 px-4 md:px-8 bg-white border-b border-gray-200">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-2xl md:text-3xl font-bold mb-3">Busca tu tema</h2>
+            <p class="text-gray-600 mb-6">Escribe como sepas: sin acentos, mayúsculas o minúsculas, te entenderá igual</p>
+            
+            <div class="relative">
+                <div class="flex items-center border-2 border-gray-300 rounded-xl overflow-hidden focus-within:border-primary focus-within:shadow-lg transition-custom bg-gray-50">
+                    <i class="fa fa-search text-gray-500 ml-4 text-lg"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Ej: Teorema de Pitagoras, Celula, Revolucion Francesa..." 
+                        class="w-full py-4 px-3 text-lg bg-transparent outline-none text-dark placeholder:text-gray-500"
+                    >
+                    <button id="searchBtn" class="bg-primary text-white px-6 py-4 hover:bg-[#194596] transition-custom font-semibold">
+                        Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resultados -->
+    <section class="py-10 px-4 md:px-8 flex-grow">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Mensaje Inicial -->
+            <div id="mensajeInicial" class="text-center py-16 text-gray-500">
+                <i class="fa fa-file-text-o text-6xl mb-4 text-gray-300"></i>
+                <p class="text-lg">Escribe un tema para ver la información optimizada</p>
+            </div>
+
+            <!-- Contenido de la Respuesta -->
+            <div id="contenidoRespuesta" class="hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100">
+                    
+                    <!-- Título y Materia -->
+                    <div class="mb-6 pb-4 border-b border-gray-200">
+                        <h3 id="tituloTema" class="text-2xl md:text-3xl font-bold text-dark"></h3>
+                        <p id="nombreMateria" class="text-gray-500 text-sm mt-1">Materia: <span class="font-medium"></span></p>
+                    </div>
+
+                    <!-- 1. DEFINICION -->
+                    <div class="mb-6 p-4 bg-blue-50 rounded-lg border-l-4 border-primary">
+                        <h4 class="font-bold text-primary text-lg mb-2">Definicion</h4>
+                        <p id="def1" class="text-gray-700 leading-relaxed"></p>
+                    </div>
+
+                    <!-- 2. CLARO Y EXPLICADO -->
+                    <div class="mb-6 p-4 bg-teal-50 rounded-lg border-l-4 border-secondary">
+                        <h4 class="font-bold text-secondary text-lg mb-2">Claro y explicado</h4>
+                        <p id="def2" class="text-gray-700 leading-relaxed"></p>
+                    </div>
+
+                    <!-- 3. CLARISIMO -->
+                    <div class="mb-8 p-4 bg-orange-50 rounded-lg border-l-4 border-orange-400">
+                        <h4 class="font-bold text-orange-500 text-lg mb-2">Clarisimo</h4>
+                        <p id="def3" class="text-gray-800 font-medium"></p>
+                    </div>
+
+                    <!-- EJEMPLO -->
+                    <div class="p-5 bg-gray-50 rounded-xl border border-gray-200">
+                        <h4 class="font-bold text-dark text-lg mb-3 flex items-center gap-2">
+                            <i class="fa fa-lightbulb-o text-yellow-500"></i> Ejemplo
+                        </h4>
+                        <p id="ejemploTexto" class="text-gray-700"></p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Cargando -->
+            <div id="cargando" class="hidden text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-3"></div>
+                <p class="text-gray-600">Buscando información...</p>
+            </div>
+
+            <!-- Error / No encontrado -->
+            <div id="noEncontrado" class="hidden text-center py-12 text-red-600 bg-red-50 rounded-xl border border-red-100">
+                <i class="fa fa-exclamation-triangle text-4xl mb-3"></i>
+                <p class="font-semibold">El tema no está registrado</p>
+                <p class="text-sm text-red-500">Verifica que el nombre esté escrito correctamente</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Pie de página -->
+    <footer class="bg-dark text-white/60 py-4 px-4 text-center text-sm">
+        <p>República Dominicana | Enciclopedia Estudiantil © 2026</p>
+    </footer>
+
+    <!-- BASE DE DATOS LISTA PARA TUS TEMAS -->
+    <script>
+        // FUNCIÓN CLAVE: Quita acentos y normaliza texto para entender cualquier escritura
+        function normalizarTexto(texto) {
+            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+        }
+
+        // AQUÍ AGREGARÉ TODOS LOS TEMAS QUE TÚ ME DES
+        const baseDeTemas = [
+            // --- EJEMPLO DE ESTRUCTURA ---
+            {
+                materia: "Matemáticas",
+                tema: "Teorema de Pitágoras",
+                definicion1: "Principio fundamental de la geometría que establece que en cualquier triángulo rectángulo, el cuadrado de la hipotenusa es igual a la suma de los cuadrados de los dos catetos. Se usa para calcular longitudes desconocidas y resolver problemas de distancias y estructuras.",
+                definicion2: "En triángulos rectángulos, la suma de los cuadrados de los catetos equivale al cuadrado de la hipotenusa. Su fórmula es: a² + b² = c².",
+                definicion3: "a² + b² = c²",
+                ejemplo: "Si los catetos miden 3 y 4, la hipotenusa es 5 → 3² + 4² = 9 + 16 = 25 → √25 = 5."
+            },
+            {
+                materia: "Biología",
+                tema: "Célula",
+                definicion1: "Es la unidad estructural y funcional básica de todos los seres vivos. Es la parte más pequeña que puede realizar por sí misma las funciones vitales: nutrición, relación y reproducción. Todos los organismos están formados por una o más células.",
+                definicion2: "Unidad básica de la vida, capaz de nutrirse, relacionarse y reproducirse. Se divide en procariota (sin núcleo) y eucariota (con núcleo definido).",
+                definicion3: "Unidad básica de la vida.",
+                ejemplo: "Las bacterias son organismos de una sola célula; los seres humanos tenemos billones de células."
+            },
+            {
+                materia: "Historia",
+                tema: "Revolución Francesa",
+                definicion1: "Movimiento social y político ocurrido en Francia entre 1789 y 1799. Puso fin a la monarquía absoluta y al sistema feudal, difundiendo ideas de libertad, igualdad y fraternidad por todo el mundo.",
+                definicion2: "Proceso de 1789 que derrocó al rey y cambió la organización de Francia. Fue el inicio de la democracia moderna en Europa.",
+                definicion3: "Fin del absolutismo, inicio de la libertad.",
+                ejemplo: "Se inició con la toma de la prisión de la Bastilla el 14 de julio de 1789, fecha que hoy se celebra como fiesta nacional en Francia."
+            }
+            // --- FIN EJEMPLO ---
+            // AQUÍ VAN TODOS LOS TEMAS QUE ME ENVÍES
+        ];
+
+        // Elementos del DOM
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const mensajeInicial = document.getElementById('mensajeInicial');
+        const contenidoRespuesta = document.getElementById('contenidoRespuesta');
+        const cargando = document.getElementById('cargando');
+        const noEncontrado = document.getElementById('noEncontrado');
+
+        // Datos de la respuesta
+        const tituloTema = document.getElementById('tituloTema');
+        const nombreMateria = document.getElementById('nombreMateria').querySelector('span');
+        const def1 = document.getElementById('def1');
+        const def2 = document.getElementById('def2');
+        const def3 = document.getElementById('def3');
+        const ejemploTexto = document.getElementById('ejemploTexto');
+
+        // Función de búsqueda INTELIGENTE
+        function buscarInformacion() {
+            const textoBusqueda = normalizarTexto(searchInput.value);
+            if (!textoBusqueda) return;
+
+            // Ocultar todo y mostrar cargando
+            mensajeInicial.classList.add('hidden');
+            contenidoRespuesta.classList.add('hidden');
+            noEncontrado.classList.add('hidden');
+            cargando.classList.remove('hidden');
+
+            // Búsqueda que entiende sin acentos ni mayúsculas
+            setTimeout(() => {
+                cargando.classList.add('hidden');
+
+                const resultado = baseDeTemas.find(item => 
+                    normalizarTexto(item.tema) === textoBusqueda || 
+                    normalizarTexto(item.tema).includes(textoBusqueda)
+                );
+
+                if (resultado) {
+                    tituloTema.textContent = resultado.tema;
+                    nombreMateria.textContent = resultado.materia;
+                    def1.textContent = resultado.definicion1;
+                    def2.textContent = resultado.definicion2;
+                    def3.textContent = resultado.definicion3;
+                    ejemploTexto.textContent = resultado.ejemplo;
+
+                    contenidoRespuesta.classList.remove('hidden');
+                    contenidoRespuesta.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    noEncontrado.classList.remove('hidden');
+                }
+
+            }, 600);
+        }
+
+        // Eventos
+        searchBtn.addEventListener('click', buscarInformacion);
+        searchInput.addEventListener('keypress', e => e.key === 'Enter' && buscarInformacion());
+    </script>
+</body>
+</html>
